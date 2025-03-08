@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\UserInfo;
 use App\Models\UserList;
+use App\Models\Course;
 
 class User extends Authenticatable
 {
@@ -60,6 +61,10 @@ class User extends Authenticatable
         return $query->select('users.id','last_name','gender','email','image');
     }
 
+    public function scopeSelectSomeUserName($query){
+        return $query->select('users.id','first_name','last_name');
+    }
+
     public function UserInfo(){
         return $this->hasOne(UserInfo::class,'user_id','id');
     }
@@ -69,7 +74,16 @@ class User extends Authenticatable
     }
 
     public function scoreOnScoreboard(){
-        $this->hasOne(Scoreboard::class,'user_id');
+       return $this->hasOne(Scoreboard::class,'user_id');
     }
 
+
+    // COURSES PART
+    public function createdCourse(){
+        return $this->hasMoney(Course::class,'created_by');
+    }
+
+    public function updatedCourse(){
+        return $this->hasMoney(Course::class,'updated_by');
+    }
 }
