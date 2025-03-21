@@ -10,8 +10,10 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Models\UserInfo;
 use App\Models\UserList;
 use App\Models\Course;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Validator;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
@@ -23,7 +25,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'first_name',
-        'last_email',
+        'last_name',
         'gender',
         'email',
         'password',
@@ -94,5 +96,25 @@ class User extends Authenticatable
 
     public function updatedCourseMaterials(){
         return $this->hasMoney(CourseMaterial::class,'updated_by');
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
